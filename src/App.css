@@ -1,0 +1,181 @@
+*{
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+
+}
+
+.initial-container{
+  display: flex;
+  background-color: #ffffff;
+  height:100vh;
+}
+
+aside{
+  width: 22vw;
+  border: 1px solid lightgray;
+}
+
+.aside-header{
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.aside-logo{
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.aside-head{
+  color:rgb(4, 3, 9);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0px;
+}
+
+aside h2{
+  color:lightgray;
+  font-size: 400;
+  font-size: 10px;
+  margin: 32px 0px 8px 20px;
+}
+
+.aside-inactive{
+  display: flex;
+  align-items: center;
+  margin: 16px 20px;
+}
+
+.aside-inactive p{
+  color:gray;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0px;
+}
+
+.aside-content-logos{
+  height: 16px;
+  width: 16px;
+  margin-right: 8px;
+  color:gray;
+}
+
+.aside-active{
+  display: flex;
+  align-items: center;
+  background-color:#E1F5FE ;
+  color:#509ADE;
+  margin: 0px;
+  padding: 10px 20px;
+}
+
+.aside-active p{
+  color:#509ADE;
+}
+
+.aside-content-active-logo{
+  color:#509ADE;
+}
+
+.right-container{
+  width: 100%;
+
+}
+
+.right-container header{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding:10px;
+  border: 1px solid lightgray;
+  border-left: none;
+
+}
+
+.right-container header div{
+  display: flex;
+  align-items: center;
+}
+
+.bell-logo{
+  height: 20px;
+  width:20px;
+  margin-right: 10px;
+}
+
+.profile-logo{
+  background-color: #039BE5;
+  color:white;
+  border-radius: 20px;
+  font-size: 10px;
+  padding:8px;
+
+  margin: 0px;
+  margin-right: 8px;
+}
+
+.profile-name{
+  color:gray;
+  margin: 0px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.tasks-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #FAFAFB;
+  padding:16px 20px;
+  border-bottom: 1px solid lightgray;
+
+}
+
+.tasks-header h1{
+  color:#949494;
+  font-size: 10px;
+  font-weight: 600;
+  margin: 0px;
+  margin-bottom: 4px;
+  padding-top:0px;
+}
+
+.tasks-header p{
+  color: #2E2E2E;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0px;
+  padding-bottom: 0px;
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.tasks-header button{
+  background-color: #1976D2;
+  color:#FAFAFB;
+  padding:8px 14px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  align-self: center;
+  border: none;
+  outline:none;
+}
+
+.filters-section{
+  display: flex;
+  align-items: center ;
+}
+
+.task-card{
+  background-color: skyblue;
+  color:rgb(38, 77, 253);
+  display: flex;
+  align-items: center;
+}
