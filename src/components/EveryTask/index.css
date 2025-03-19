@@ -1,0 +1,14 @@
+.task-row{
+  width: 100%;
+  color:gray;
+  font-size: 12px;
+  font-weight: 500;
+  height:30px;    
+  padding:12px 5px;
+  border-bottom: 1px solid lightgray;
+}
+
+.task-row td:nth-child(1){
+  width: 5%;
+  text-align: center;
+}

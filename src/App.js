@@ -1,3 +1,6 @@
+import{ useState, useEffect } from 'react'
+
+import EveryTask from "./components/EveryTask";
 
 import { MdOutlineDashboard } from "react-icons/md";
 import { AiOutlineStock } from "react-icons/ai";
@@ -17,6 +20,19 @@ import "@fontsource/inter/600.css";
 import './App.css'
 
 const App = () => {
+
+  const [tasks, setTasks] = useState([])
+  
+      useEffect(() => {
+          const getTasks = async () => {
+              const tasksFromServer = await fetch("https://67dabc4e35c87309f52dcaeb.mockapi.io/tasks")
+              const data = await tasksFromServer.json()
+              console.log(data)
+              setTasks(data)
+          }
+  
+          getTasks()
+      },[])
 
   const leftCard = (
     <aside>
@@ -47,7 +63,7 @@ const App = () => {
         <h2>Pipelines</h2>
         <div className="aside-inactive">
           <CiDollar className="aside-content-logos"  />
-          <p>Opertunites</p>
+          <p>Opportunities</p>
         </div>
         <div className="aside-inactive">
           <BiCodeAlt className="aside-content-logos"  />
@@ -93,22 +109,44 @@ const App = () => {
           <button type="button">Create Task</button>
         </div>
         <div className="filters-section">
-          <div className="task-card"> 
-            <p className="task-card-para">(3) Task Type</p>
+          <div className="task-card active"> 
+            <p>(3) Task Type</p>
             <FaAngleDown className="task-card-down-arrow" />
           </div>
-          <div className="tassk-card"> 
-            <p className="task-card-para">Due Date</p>
-            <FaAngleDown className="task-card-down-arrow" />
-          </div>
-          <div className="task-card"> 
-            <p className="task-card-para">Assigned to</p>
+          <div className="task-card active"> 
+            <p>Due Date</p>
             <FaAngleDown className="task-card-down-arrow" />
           </div>
           <div className="task-card"> 
-            <p className="task-card-para">Priority</p>
+            <p>Assigned to</p>
             <FaAngleDown className="task-card-down-arrow" />
           </div>
+          <div className="task-card"> 
+            <p>Priority</p>
+            <FaAngleDown className="task-card-down-arrow" />
+          </div>
+        </div>
+        <div className="tasks-table">
+          <table>
+            <thead>
+              <tr className='table-header'>
+                <th><input type="checkbox"/></th>
+                <th>To do</th>
+                <th>Priority</th>
+                <th>Due date</th>
+                <th>Associated Record</th>
+                <th>Assigned to</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.length > 0 ? (
+                  tasks[0].map((task) => <EveryTask task={task} key={parseInt(task.id, 10)} />)
+              ) : (
+                  <tr><td colSpan="6">No tasks found</td></tr>
+              )}            
+            </tbody>            
+          
+          </table>
         </div>
       </div>
     </div>
