@@ -1,10 +1,14 @@
 import{ useState, useEffect } from 'react'
 
+import { parse, format, set } from "date-fns";
+
 import EveryTask from "./components/EveryTask";
 
 import { RiExpandUpDownFill } from "react-icons/ri";
 import { IoChevronForward } from "react-icons/io5";
 import { TfiControlSkipForward } from "react-icons/tfi";
+
+import { IoMdClose  } from "react-icons/io";
 
 import { MdOutlineDashboard } from "react-icons/md";
 import { AiOutlineStock } from "react-icons/ai";
@@ -32,32 +36,54 @@ const App = () => {
   const [totalPages, setTotalPages] = useState(0)
   const [tasksPerPage, setTasksPerPage] = useState(6)
   const [filteredTasks, setFilteredTasks] = useState([])
-  const [filterDueDate, setFilterDueDate] = useState(false)
+  const [filterDueDate, setFilterDueDate] = useState(false) 
+  const [filterPriority, setFilterPeriority] = useState(false)
+  const [filterAssign, setFilterAssign] = useState(false)
+  const [filterMain, setFilterMain] = useState("")
+  const [showPopUp, setShowPopup] = useState(false)
+
+  const [title, setTile] = useState('')
+  const [type, setType] = useState('call')
+  const [priority, setPriority] = useState('high')
+  const [dueDate, setDueDate] = useState('')
+  const [associatedRecord, setAssociatedRecord] = useState('')
+  const [assignedTo, setAssignedTo] = useState('')
+const [done,setDone] = useState(false)
+  const [error, setError] = useState(false)
+
+
 
   useEffect(() => {
-    const filterTasks = async () => {
-      if(tasks.length >= 1 && filterDueDate){
-        console.log("entered")
-        const sortedTasks = [...tasks].sort((a, b) => 
-          new Date(formatDate(a.dueDate)) - new Date(formatDate(b.dueDate))
-        );
-        console.log(sortedTasks)
-        setFilteredTasks(sortedTasks)
-      }else{
-        setFilteredTasks(tasks)
+    if(filterMain === 'Priority'){
+      if(filteredTasks.length >= 1){
+        const order = {"High":1, "Medium":2, "Low":3}
+        const priorityOrder = [...filteredTasks].sort((a,b) =>   order[a.priority] - order[b.priority])
+        setFilteredTasks(priorityOrder)
       }
+    }else if(filterMain === "dueDate"){
+      if(tasks.length >= 1 ){
+
+        const sortedTasks = [...tasks].sort((a, b) => 
+        {
+          const parsedDuedateOne = parse(a.dueDate, "dd MMM, yyyy, hh:mma", new Date())
+          const parsedDueDateTwo = parse(b.dueDate, "dd MMM, yyyy, hh:mma", new Date())
+          return parsedDuedateOne - parsedDueDateTwo
+        }
+        );
+        setFilteredTasks(sortedTasks)
+      }
+    }else if(filterMain === "assign"){
+      if(tasks.length >= 1){
+        const sortedTwo = [...tasks].sort((a, b) => a.assignedTo.localeCompare(b.assignedTo));
+        setFilteredTasks(sortedTwo)
+      }
+    }else{
+      setFilteredTasks(tasks)
     }
-
-    filterTasks()
-  },[filterDueDate])
-
-  function formatDate(dateStr) {
-    return dateStr.replace(/(\d{2}) (\w{3}), (\d{4}), (.+)/, "$2 $1, $3 $4");
-  }
-
-
+  },[filterMain])
 
   useEffect(() => {
+    console.log("yes")
     const getTasks = async () => {
       const totalPages = Math.ceil(filteredTasks.length / tasksPerPage)
 
@@ -78,8 +104,7 @@ const App = () => {
       useEffect(() => {
           const getTasks = async () => {
               const tasksFromServer = await fetch("https://67dabc4e35c87309f52dcaeb.mockapi.io/tasks")
-              const data = await tasksFromServer.json()
-
+              let data = await tasksFromServer.json()
               setTasks(data)
               setFilteredTasks(data)
           }
@@ -161,9 +186,133 @@ const App = () => {
   }
 
   const onclickDueDate = () => {
+    setFilterMain("dueDate")
+    setFilterAssign(false)
     setFilterDueDate(true)
+    setFilterPeriority(false)
   }
 
+  const onClickDuedateClose = () => {
+
+    setFilterMain("")
+    setFilterDueDate(false)
+
+  }
+
+  const onClickAssignClose = () => {
+    setFilterMain("")
+    setFilterAssign(false)
+
+  }
+
+  const onClickPriorityClose = () => {
+    setFilterMain("")
+    setFilterPeriority(false)
+
+  }
+
+  const onClickPriotiyOne = () => {
+    setFilterMain("Priority")
+    setFilterAssign(false)
+    setFilterDueDate(false)
+    setFilterPeriority(true)
+
+  }
+
+  const onClickAssignone = () => {
+    setFilterMain("assign")
+    setFilterAssign(true)
+    setFilterDueDate(false)
+    setFilterPeriority(false)
+  }
+
+  const onClickCreatetask = () => {
+    setShowPopup(true)
+  }
+
+  const onSubmitFormelement = async(e) => {
+    e.preventDefault()
+    if(title !== '' && type !== "" && priority !== '' && dueDate !== '' && associatedRecord !== '' && assignedTo !== ''){
+      const newTask = {
+        title : type + " " + title,
+        priority,
+        dueDate,
+        associatedRecord,
+        assignedTo,
+        taskType:type,
+        completed:false
+      }
+
+      setError(false)
+
+      const options = {
+        method:"POST",
+        headers:{
+          "Content-Type": "application/json"
+        },
+        body:JSON.stringify(newTask)
+      }
+
+      await fetch("https://67dabc4e35c87309f52dcaeb.mockapi.io/tasks", options)
+
+      setDone(true)
+
+      setTile('')
+      setAssignedTo(''
+      )
+      setAssociatedRecord('')
+      setDueDate('')
+
+    }else{
+      setError(true)
+      setDone(false)
+    }
+  }
+
+  const popUpone = () => {
+    return(
+      <div className='popup-intial-cont'>
+    <form onSubmit={onSubmitFormelement} className={`form-element ${showPopUp && "show-form"}`}>
+      <h1 className="aside-head">Create Task</h1>
+      <p>Task Name<mark>*</mark></p>
+      <input value={title} onChange={(e) => setTile(e.target.value)} type='text' placeholder='E.g Call ken' />
+      <div className='form-task-combiner'>
+        <div>
+          <p>Task<mark>*</mark></p>
+          <select value={type} onChange={(e) => setType(e.target.value)} className='combainer-sep-1'>
+            <option id="call">Call</option>
+            <option id="email">Email</option>
+            <option id="meeting">Meeting</option>
+          </select>
+        </div>
+        <div>
+          <p>Priority<mark>*</mark></p>
+          <select value={priority} onChange={(e) => setPriority(e.target.value)}  placeholder='Select'>
+            <option id="high">High</option>
+            <option id="medium">Medium</option>
+            <option id="Low">Low</option>
+          </select>
+        </div>
+      </div>
+      <p>Associated Record<mark>*</mark></p>
+      <input value={associatedRecord} onChange={(e) => setAssociatedRecord(e.target.value)}  type='text' placeholder='Search Company' />
+      <p>Assigned to<mark>*</mark></p>
+      <input value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} type='text' placeholder='Type Assigned Name' />
+      <p>Due date & time<mark>*</mark></p>
+      <input value={dueDate} onChange={(e) => setDueDate(e.target.value)} type="datetime-local" />
+      <p>Add Notes</p>
+      <textarea rows={4}></textarea>
+      <div className='form-button-cont'>
+        <button className='close-button-form' onClick={() => setShowPopup(false)}>Cancel</button>
+        <button type='submit' className='submie-button-form'>Create Contact</button>
+      </div>
+      {done && <p style={{color:"green"}}>Task Create succesfully</p> }
+      {error&&
+      <p style={{color:'red'}}>Please fill all the required feilds</p>}
+    </form>
+    </div>)
+  }
+  
   return (
     <div className='initial-container'>
       {leftCard}
@@ -180,24 +329,32 @@ const App = () => {
             <h1>Tasks</h1>
             <p>Important Task</p>
           </div>
-          <button type="button">Create Task</button>
+          <button type="button" onClick={onClickCreatetask}>Create Task</button>
         </div>
+
+          {showPopUp && popUpone()}
+        
         <div className="filters-section">
           <div className="task-card active"> 
             <p>(3) Task Type</p>
             <FaAngleDown className="task-card-down-arrow" />
           </div>
-          <div onClick={onclickDueDate} className="task-card"> 
-            <p>Due Date</p>
+          <div className={`task-card ${filterDueDate && "active"}`}> 
+            <p onClick={onclickDueDate}>Due Date</p>
             <FaAngleDown className="task-card-down-arrow" />
+            {filterDueDate && <IoMdClose onClick={onClickDuedateClose} className='close-one' />}
           </div>
-          <div onClick={onclickDueDate} className="task-card"> 
-            <p>Assigned to</p>
+          <div className={`task-card ${filterAssign && "active"}`}> 
+            <p onClick={onClickAssignone}>Assigned to</p>
             <FaAngleDown className="task-card-down-arrow" />
+            {filterAssign && <IoMdClose onClick={onClickAssignClose} className='close-one' />}
+
           </div>
-          <div onClick={onclickDueDate} className="task-card"> 
-            <p>Priority</p>
+          <div className={`task-card ${filterPriority && "active"}`}> 
+            <p onClick={onClickPriotiyOne}>Priority</p>
             <FaAngleDown className="task-card-down-arrow" />
+            {filterPriority && <IoMdClose onClick={onClickPriorityClose} className='close-one' />}
+
           </div>
         </div>
         <div className="tasks-table">

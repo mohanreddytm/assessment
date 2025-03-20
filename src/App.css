@@ -187,6 +187,12 @@ aside h2{
   cursor: pointer;
 }
 
+.close-one{
+  font-size: 12px;
+  height:10px;
+  width: 10px;
+}
+
 .active{
   background-color: #E1F5FE;
 }
@@ -221,6 +227,112 @@ table thead tr{
   padding:20px 5px;
   border-bottom: 1px solid lightgray;
 
+}
+
+.form-element{
+background-color: white;
+
+padding:20px;
+width:33%;
+
+}
+
+.form-element input{
+  width: 100%;
+  border: 1px solid lightgray;
+  background-color: transparent;
+  border-radius: 4px;
+  padding:8px 16px;
+  outline: none;
+  color:gray;
+  font-size: 12px;
+  margin-bottom: 10px;
+
+}
+
+.combainer-sep{
+  width: 120% !important;
+}
+
+.form-element select{
+  width: 150px;
+  border: 1px solid lightgray;
+  background-color: transparent;
+  border-radius: 4px;
+  padding:8px 16px;
+  outline: none;
+  color:gray;  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+mark{
+  background-color: transparent;
+  color:red;
+  margin-left: 2px;
+}
+
+.form-task-combiner{
+  display: flex;
+  align-items:center;
+  justify-content: space-between;
+  
+}
+
+
+.form-element p{
+  color:gray;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 10px;
+  margin-left: 0px;
+  margin-bottom: 4px;
+}
+
+.form-element textarea{
+  border: 1px solid lightgray;
+  width: 100%;
+  color:gray;
+}
+
+.form-button-cont{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.close-button-form{
+  color:#039BE5;
+  background-color: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.popup-intial-cont{
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top:0px;
+  bottom:0px;
+  right:0px;
+  left:0px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.submie-button-form{
+  background-color: #1976D2;
+  color:#FAFAFB;
+  padding:8px 14px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  align-self: center;
+  border: none;
+  outline:none;
+  cursor: pointer;
 }
 
 .top-down-icon{
@@ -288,6 +400,7 @@ margin:16px 0px
   color:#039BE5;
   outline: none;
   cursor: pointer;
+
 
 }
 

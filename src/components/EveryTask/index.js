@@ -12,9 +12,10 @@ const colors = [
     "#FF5733", "#33FF57", "#3357FF", "#FF33A8", "#A833FF",
     "#33FFF3", "#FF8C33", "#8C33FF", "#33FF8C", "#FF3333"
   ];
-
+  
 
 const EveryTask = ({task}) => {
+
 
     let icon  = null;
     let classone = null;
