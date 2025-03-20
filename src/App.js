@@ -2,6 +2,10 @@ import{ useState, useEffect } from 'react'
 
 import EveryTask from "./components/EveryTask";
 
+import { RiExpandUpDownFill } from "react-icons/ri";
+import { IoChevronForward } from "react-icons/io5";
+import { TfiControlSkipForward } from "react-icons/tfi";
+
 import { MdOutlineDashboard } from "react-icons/md";
 import { AiOutlineStock } from "react-icons/ai";
 import { LiaIndustrySolid } from "react-icons/lia";
@@ -9,7 +13,7 @@ import { BsListTask } from "react-icons/bs";
 import { CiDollar,CiSquarePlus ,CiBellOn } from "react-icons/ci";
 import { BiCodeAlt } from "react-icons/bi";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
-import { SiSimpleanalytics } from "react-icons/si";
+import { SiCucumber, SiSimpleanalytics } from "react-icons/si";
 import { FaAngleDown } from "react-icons/fa";
 
 
@@ -22,13 +26,62 @@ import './App.css'
 const App = () => {
 
   const [tasks, setTasks] = useState([])
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [tasksCurrent, setTasksCurrent] = useState([])
+  const [totalPages, setTotalPages] = useState(0)
+  const [tasksPerPage, setTasksPerPage] = useState(6)
+  const [filteredTasks, setFilteredTasks] = useState([])
+  const [filterDueDate, setFilterDueDate] = useState(false)
+
+  useEffect(() => {
+    const filterTasks = async () => {
+      if(tasks.length >= 1 && filterDueDate){
+        console.log("entered")
+        const sortedTasks = [...tasks].sort((a, b) => 
+          new Date(formatDate(a.dueDate)) - new Date(formatDate(b.dueDate))
+        );
+        console.log(sortedTasks)
+        setFilteredTasks(sortedTasks)
+      }else{
+        setFilteredTasks(tasks)
+      }
+    }
+
+    filterTasks()
+  },[filterDueDate])
+
+  function formatDate(dateStr) {
+    return dateStr.replace(/(\d{2}) (\w{3}), (\d{4}), (.+)/, "$2 $1, $3 $4");
+  }
+
+
+
+  useEffect(() => {
+    const getTasks = async () => {
+      const totalPages = Math.ceil(filteredTasks.length / tasksPerPage)
+
+      const indexOfLastTask = currentPage * tasksPerPage
+      const indexOfFirstTask = indexOfLastTask - tasksPerPage
+      const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask)
+
+      setTasksCurrent(currentTasks)
+
+      setTotalPages(totalPages)
+    }
+
+    getTasks()
+
+  }, [currentPage, filteredTasks, tasksPerPage])
+
   
       useEffect(() => {
           const getTasks = async () => {
               const tasksFromServer = await fetch("https://67dabc4e35c87309f52dcaeb.mockapi.io/tasks")
               const data = await tasksFromServer.json()
-              console.log(data)
+
               setTasks(data)
+              setFilteredTasks(data)
           }
   
           getTasks()
@@ -90,6 +143,27 @@ const App = () => {
       </aside>
   )
 
+  const onClickItemsPerPage = (e) => {
+    const itemsPerPage = e.target.value
+    setTasksPerPage(itemsPerPage)
+  }
+
+  const onClickForward = () => {
+    if(currentPage < totalPages){
+      setCurrentPage(currentPage + 1)
+    }
+  }
+
+  const onClickDoubleForward = () => {
+    if(currentPage < totalPages - 1){
+      setCurrentPage(currentPage + 2)
+    }
+  }
+
+  const onclickDueDate = () => {
+    setFilterDueDate(true)
+  }
+
   return (
     <div className='initial-container'>
       {leftCard}
@@ -113,15 +187,15 @@ const App = () => {
             <p>(3) Task Type</p>
             <FaAngleDown className="task-card-down-arrow" />
           </div>
-          <div className="task-card active"> 
+          <div onClick={onclickDueDate} className="task-card"> 
             <p>Due Date</p>
             <FaAngleDown className="task-card-down-arrow" />
           </div>
-          <div className="task-card"> 
+          <div onClick={onclickDueDate} className="task-card"> 
             <p>Assigned to</p>
             <FaAngleDown className="task-card-down-arrow" />
           </div>
-          <div className="task-card"> 
+          <div onClick={onclickDueDate} className="task-card"> 
             <p>Priority</p>
             <FaAngleDown className="task-card-down-arrow" />
           </div>
@@ -132,21 +206,72 @@ const App = () => {
               <tr className='table-header'>
                 <th><input type="checkbox"/></th>
                 <th>To do</th>
-                <th>Priority</th>
-                <th>Due date</th>
-                <th>Associated Record</th>
-                <th>Assigned to</th>
+                <th><div className='inside-task-container'>{"Priority"}<RiExpandUpDownFill className='top-down-icon' /></div></th>
+                <th><div className='inside-task-container'>{"Due date"}<RiExpandUpDownFill className='top-down-icon' /></div></th>
+                <th><div className='inside-task-container'>{"Associated Record"}<RiExpandUpDownFill className='top-down-icon' /></div></th>
+                <th><div className='inside-task-container'>{"Assigned to"}<RiExpandUpDownFill className='top-down-icon' /></div></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              {tasks.length > 0 ? (
-                  tasks[0].map((task) => <EveryTask task={task} key={parseInt(task.id, 10)} />)
+              {tasksCurrent.length > 0 ? (
+                  tasksCurrent.map((task) => <EveryTask task={task} key={task.id} />)
               ) : (
                   <tr><td colSpan="6">No tasks found</td></tr>
               )}            
             </tbody>            
           
           </table>
+          <div className='iterative-section'>
+            <div className='iterative-section-left'>
+              <p>Tasks Per Page</p>
+              <select value={tasksPerPage} onChange={onClickItemsPerPage}>
+                {Array.from({length: 10}, (_, index) => {
+                  if(index === 5){
+                    return <option key={index + 1} id={index + 1} selected>{index + 1}</option>
+                  }
+                  return <option key={index + 1} id={index + 1}>{index + 1}</option>
+                })}
+              </select>
+              <p>Go to</p>
+              <select value={currentPage} onChange={e => setCurrentPage(parseInt(e.target.value))}>
+                {Array.from({ length: totalPages }, (_, index) => {
+                  if(index === 0){
+                    return <option key={index + 1} id={index + 1} selected>{index + 1}</option>
+                  }
+                  return <option key={index + 1} id={index + 1}>{index + 1}</option>
+                }
+                )}
+              </select>
+            </div>
+            <div className='iterative-section-right'>
+                {Array.from({ length: totalPages }, (_, index) => {
+                  if(index <= 3){
+                    if(index === currentPage - 1){
+                      return<button className='special-one' key={index + 1} onClick={() => setCurrentPage(index+1)}>{index+1}</button>
+                    }
+                    return<button key={index + 1} onClick={() => setCurrentPage(index + 1)}>{index+1}</button>
+                  }
+                  return null
+                })}
+                
+                <button className={`${currentPage > 4 && currentPage < totalPages - 3 ? "special-one":""}`} >{currentPage > 4 && currentPage < totalPages - 3 ? currentPage: "..."}</button>
+                {Array.from({ length: totalPages }, (_, index) => {
+                  if(index >= totalPages - 3){
+                    if(index === currentPage - 1){
+                      return<button className='special-one' key={index + 1} onClick={() => setCurrentPage(index+1)}>{index+1}</button>
+                    }
+                    return<button key={index + 1} onClick={() => setCurrentPage(index+1)}>{index+1}</button>
+                  }
+                  return null
+                })}
+
+                <button className='special-forward-classes' onClick={onClickForward} type='button'><IoChevronForward /></button>
+                <button className='special-forward-classes' onClick={onClickDoubleForward} type='button'><TfiControlSkipForward /></button>
+
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>

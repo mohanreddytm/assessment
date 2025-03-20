@@ -3,7 +3,7 @@
   color:gray;
   font-size: 12px;
   font-weight: 500;
-  height:30px;    
+  height:40px;    
   padding:12px 5px;
   border-bottom: 1px solid lightgray;
 }
@@ -12,3 +12,48 @@
   width: 5%;
   text-align: center;
 }
+
+.task-row td:nth-child(2){
+
+  text-align: start;
+
+}
+
+.task-row td:nth-child(7){
+
+  text-align: start;
+}
+
+.icon-class-one{
+  margin-right: 4px;
+  font-size: 14px;
+
+  margin-bottom: 0px;
+
+
+}
+
+.profile-mini-logo{
+
+  color:white;
+  border-radius: 25px;
+  font-size: 8px;
+  padding:9px 8px;
+
+  margin: 0px;
+  margin-right: 8px;
+}
+
+.inside-task-container{
+  display: flex;
+  align-items: center;
+}
+
+.high-priority{
+  color:red;
+}
+
+.medium-priority{
+  color:orange;
+}
+
